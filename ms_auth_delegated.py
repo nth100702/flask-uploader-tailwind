@@ -11,7 +11,6 @@ import webbrowser
 #         "userId": "43b76bad-50b0-43e2-9dec-fe4f639bf486",
 #         "clientId": "61a8ce14-21ce-4e70-9384-74b4e5984a35",
 #         "authority": "https://login.microsoftonline.com/52251bad-a823-403e-aaa4-6c40a9fd624b",
-#         "clientSecret": "qt88Q~BkzY9UBc7CUXfLoeJEcUjz3efhoOkP5djC",
 #         "redirectUri": "http://localhost:5000/auth"
 #     },
 #     "cache": {
@@ -36,7 +35,7 @@ import webbrowser
 
 # GMD credentials
 APPLICATION_ID = "61a8ce14-21ce-4e70-9384-74b4e5984a35"
-CLIENT_SECRET = "qt88Q~BkzY9UBc7CUXfLoeJEcUjz3efhoOkP5djC"
+
 SCOPES = ["https://graph.microsoft.com/.default"]
 TENTANT_ID = "52251bad-a823-403e-aaa4-6c40a9fd624b"
 REDIRECT_URI = "http://localhost:5000/auth"
