@@ -1,0 +1,341 @@
+{% extends "base.html" %} {% block content %}
+<!-- <div class="col g-3"> -->
+  <!-- Header -->
+<div class="relative w-fulllex flex-col items-center ">
+  <img src="{{ url_for('static', filename='images/header.png') }}" class="w-full items-center " alt="">
+</div>
+<!-- Background components -->
+<div class="relative flex flex-col background-color items-center">
+  <div id="bg-img-top-lef" class="absolute left-0 top-0"></div>
+  <div id="bg-img-top-right" class="absolute top-0 right-0"></div>
+  <div id="bg-img-bot-lef" class="absolute bottom-0 left-0"></div>
+  <div id="bg-img-bot-right" class="absolute bottom-0 right-0"></div>
+
+  <div
+    class="my-3 flex flex-col items-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 z-10">
+    <div>
+      <h2>BÀI DỰ THI</h2>
+    </div>
+    
+    <div>
+      <div class="z-10">
+        <form method="POST" action="thianhdep/upload"
+          class="dropzone dz-clickable block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+          id="dropper" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+          <div class="form-group row">
+            {{ form.ma_nhan_vien.label(class="form-control-label font-sans font-semibold") }} {{
+            form.ma_nhan_vien(class="form-control", autocomplete="on",placeholder="Mã nhân viên . . .") }}
+            <p id="error_mnv" class="error-message hidden text-pink-600 text-sm">Mã nhân viên: 3-6 characters, only digits.</p>
+            </div>
+          <div class="form-group row">
+            {{ form.ho_ten.label(class="form-control-label font-sans font-semibold") }} {{
+            form.ho_ten(class="form-control", autocomplete="on", placeholder="Họ và tên . . .")  }}
+            <p id="error_name" class="error-message hidden text-pink-600 text-sm">Họ và tên: 3-50 characters, only letters.</p>
+          </div>
+          <div class="form-group row">
+            {{ form.phone.label(class="form-control-label font-sans font-semibold") }} {{
+            form.phone(class="form-control", autocomplete="on", placeholder="Số điện thoại . . .") }}
+            <p id="error_phone" class="error-message hidden text-pink-600 text-sm">Số điện thoại: 7-11 digits, only digits, starts with 0.</p>
+          </div>
+          <div class="form-group row">
+            {{ form.email.label(class="form-control-label font-semibold") }} {{
+            form.email(class="form-control", autocomplete="on" ,placeholder="Email . . .") }}
+            <p id="error_email" class="error-message hidden text-pink-600 text-sm">Email, only letters, digits, @, and .</p>
+          </div>
+          <div class="form-group row">
+            {{ form.phong_ban.label(class="form-control-label font-semibold") }} {{
+            form.phong_ban(class="form-control", autocomplete="on",placeholder="Phòng ban . . .")}}
+            <p id="error_pb" class="error-message hidden text-pink-600 text-sm">Phòng ban: 3-30 characters, letters & digits.</p>
+          </div>
+          <div class="form-group row">
+            {{ form.don_vi.label(class="form-control-label font-semibold") }} {{
+            form.don_vi(class="form-control", autocomplete="on") }}
+          </div>
+          <div class="form-group row">
+            {{ form.recaptcha.label(class="form-control-label font-semibold") }} {{
+            form.recaptcha(class="form-control", autocomplete="on") }}
+          </div>
+          <p>Các định dạng hỗ trợ: .png, .jpg, .jpeg, .gif, .mp4, .avi, .mov, .pdf, .doc, .docx</p>
+          <input type="hidden" id="submit_id" name="submit_id" value=""
+          />
+        </form>
+      </div>
+    </div>
+    
+    <div class="">
+      <button type="submit" id="submitBtn"
+        class="text-white items-center bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-4">
+        Nộp bài dự thi
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script type="application/javascript" nonce="{{ nonce }}">
+  const validateForm = function () {
+    let ma_nhan_vien = document.getElementById('ma_nhan_vien').value
+    let ho_ten = document.getElementById('ho_ten').value
+    let phone = document.getElementById('phone').value
+    let email = document.getElementById('email').value
+    let phong_ban = document.getElementById('phong_ban').value
+    let don_vi = document.getElementById('don_vi').value
+
+    var error_mnv = document.getElementById('error_mnv');
+    var error_name = document.getElementById('error_name');
+    var error_phone = document.getElementById('error_phone');
+    var error_email = document.getElementById('error_email');
+    var error_pb = document.getElementById('error_pb');
+    // ma_nhan_vien: 3-6 characters, only digits
+    if (ma_nhan_vien.length < 3 || ma_nhan_vien.length > 6 || isNaN(ma_nhan_vien)) {
+      console.log(`ma_nhan_vien: ${ma_nhan_vien} is invalid`)
+      document.getElementById('ma_nhan_vien').focus()
+      error_mnv.classList.remove('hidden')
+      return false
+    }
+      error_mnv.style.display = 'none';
+
+    // ho_ten: 3-50 characters, only letters, vietnamese characters supported, and spaces
+    if (ho_ten.length < 3 || ho_ten.length > 50 || !/^[a-zA-Z\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]*$/.test(ho_ten)) {
+      console.log(`ho_ten: ${ho_ten} is invalid`)
+      document.getElementById('ho_ten').focus()
+      error_name.classList.remove('hidden')
+      return false
+    }
+    error_name.style.display = 'none';
+
+    // phone: 7-11 digits, only digits, starts with 0
+    if (phone.length < 7 || phone.length > 11 || isNaN(phone) || phone.charAt(0) !== '0') {
+      console.log(`phone: ${phone} is invalid`)
+      document.getElementById('phone').focus()
+      error_phone.classList.remove('hidden')
+      return false
+    }
+    error_phone.style.display = 'none';
+
+    // email, only letters, digits, @, and .
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      console.log(`email: ${email} is invalid`)
+      document.getElementById('email').focus()
+      error_email.classList.remove('hidden')
+      return false
+    }
+    error_email.style.display = 'none';
+
+    // phong_ban: 3-30 characters, letters & digits
+    if (phong_ban.length < 3 || phong_ban.length > 30 || !/^[a-zA-Z0-9\s]*$/.test(phong_ban)) {
+      console.log(`phong_ban: ${phong_ban} is invalid`)
+      document.getElementById('phong_ban').focus()
+      error_pb.classList.remove('hidden')
+      return false
+    }
+    error_pb.style.display = 'none';
+    console.log('form validation passed!')
+    return true
+  }
+  // disable submit button initially, after DOM is fully loaded
+  document.addEventListener('DOMContentLoaded', (event) => {
+    // check if all entries fields are filled
+    console.log('DOM fully loaded and parsed')
+    let dropperForm = document.getElementById('dropper')
+    let inputs = document.querySelectorAll('#ma_nhan_vien, #ho_ten, #don_vi', '#phong_ban', '#phone', '#email')
+    // initially disable submitButton
+    let submitButton = document.getElementById('submitBtn')
+    submitButton.disabled = true
+    submitButton.classList.add('cursor-not-allowed')
+    // Polling every 3 seconds
+    setInterval(() => {
+      // console.log('Polling every 3 seconds')
+      let recaptchaFilled = grecaptcha && grecaptcha.getResponse().length !== 0
+      // console.log('grepcaptcha', grecaptcha)
+      // console.log('grep res', grecaptcha.getResponse())
+      let allFilled = true
+      inputs.forEach(function (input) {
+        if (input.value === '') {
+          allFilled = false
+        }
+      })
+      if (recaptchaFilled && allFilled) {
+        submitButton.disabled = false
+        submitButton.classList.remove('cursor-not-allowed')
+      } else {
+        submitButton.disabled = true
+        submitButton.classList.add('cursor-not-allowed')        
+      }
+    }, 3000)
+    Dropzone.options.dropper = {
+      paramName: 'file',
+      // disable auto processing (uploading) of dropped files => submit only when entry fields are filled
+      autoProcessQueue: false,
+      init: function () {
+        const dz = this
+        // Has to register custom submit handler for dropzone within init function as required by the declarative approach
+        let submitButton = document.querySelector('#submitBtn')
+
+        /* to generate IDs, avoid using Math.random() => security risk
+        use Web Crypto API instead, https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues
+        web scripto -> 2 approaches: generate random array buffer value or use randomUUID
+        return window.crypto.randomUUID()
+        use uuidv4.js from cdn to avoid browser compatibility issues
+        load uuidv4.js from cdn */
+
+        async function verifyRecaptcha(response) {
+          /*
+          get recaptcha secret key from server
+          */
+          async function verifyRecaptcha(response) {
+            let res_captcha_server = await fetch('/recaptcha')
+            secret = await res_captcha_server.json()
+            const res_captcha_gg = await fetch(
+              'https://www.google.com/recaptcha/api/siteverify',
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  secret,
+                  response,
+                }),
+              }
+            )
+            const result = await res_captcha_gg.json()
+            return result?.success
+          }
+        }
+        submitButton.addEventListener('click', async (e) => {
+          e.preventDefault()
+          // when submit button is clicked, verify reCAPTCHA before uploading files
+          if ((await verifyRecaptcha(grecaptcha.getResponse())) === false) {
+            // show error message
+            // disable submit button for 2
+            submitButton.disabled = true
+            submitButton.classList.add('cursor-not-allowed')
+            alert(
+              'error',
+              'Xác thực reCAPTCHA thất bại! Vui lòng thử lại.'
+            )
+            return
+          }
+
+          // validate form data
+          if (!validateForm()) {
+            return
+          }
+
+          // generate submit ID on frontend request
+          let submitId = uuidv4()
+          console.log('submit_id', submitId)
+          document.getElementById('submit_id').value = submitId
+          // Process the queue => upload files
+          try {
+            dz.processQueue()
+          } catch (error) {
+            console.error('Error processing queue', error)
+          }
+        })
+        // remove all files from dropzone after uploading
+        dz.on('queuecomplete', () => {
+          // remove all files from dropzone after 5 seconds
+          setTimeout(() => {
+            // redirect to success page
+            window.location.href = '/success'
+            // dz.removeAllFiles()
+          }, 5000)
+        })
+
+        // IMPORTANT: Only accepts valid filenames, else remove file from dropzone
+        // fileadded event handler
+        dz.on('addedfile', (file) => {
+          // check file size & type
+          if (!checkFileSizeLimit(file)) {
+            throw new Error('File vượt quá giới hạn kích thước!')
+          }
+          console.log('Ok, file size & type are within limit')
+        })
+        /*
+        Dz has a limitation that its retry mechanism doesn't provide a built-in way to stop retrying for a specific file based on the server's response.
+        Using on "sending" & xhr.onreadystatechange only works for the first time, but not for the subsequent retries.
+        => Solution: implement a custom retry mechanism
+        */
+        // Add error handler for dropzone
+        dz.on('error', (file, errorMessage) => {
+          dz.emit(
+            'error',
+            file,
+            `${errorMessage}`
+          )
+          // remove file from queue after 5 seconds
+          setTimeout((file) => {
+            // remove preview from DOM
+            file.previewElement.parentNode.removeChild(file.previewElement)
+            dz.removeFile(file)
+          }, 5000)
+        })
+      },
+      // chunk upload configs
+      chunking: true,
+      forceChunking: true, // always use chunking (for simplicity's sake)
+      chunkSize: 327680 * 16, // ~ 5.2mb, in bytes: 1,000,000 bytes = 1MB, MS Graph API limits chunk size to be multiples of 327,680 bytes, https://learn.microsoft.com/en-us/graph/api/driveitem-createuploadsession?view=graph-rest-1.0#upload-bytes-to-the-upload-session
+      // parallelChunkUploads: true, // default: Only 2 files are uploaded in parallel
+      retryChunks: true,
+      retryChunksLimit: 2,
+      url: '/thianhdep/upload',
+      // Each submit event => upload 8 files in parallel
+      parallelUploads: 16,
+      maxFiles: 16,
+      maxFilesize: 500,
+      // accepts images, video, and text formats
+      acceptedFiles:
+        '.png, .jpg, .jpeg, .gif, .mp4, .avi, .mov, .pdf, .doc, .docx', // avoid .txt (text files) which includes scripts etc.
+      dictDefaultMessage: 'Kéo thả file vào đây hoặc click để chọn file',
+      accept: function (file, done) {
+        const dz = this
+        // stop retry sending chunks if received 200 OK with the message: 'File already saved'
+        dz.on('sending', (file, xhr, formData) => {
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status === 200 && xhr.responseText === 'File already saved') {
+                // stop retry
+                file.status = 'error'
+                // stop sending any more chunks for that file
+                dz.cancelUpload(file)
+                // Display message to user
+                dz.emit('error', file, 'Whoops, file đã tồn tại trên hệ thống!')
+                // remove this file from queue
+                dz.removeFile(file)
+              }
+            }
+          }
+        })
+        done()
+      },
+    }
+
+    function checkFileSizeLimit(file) {
+      // 50MB for photos, 500MB for videos
+      photoMaxSize = 50 * 1024 * 1024 // 50MB in bytes
+      videoMaxSize = 500 * 1024 * 1024 // 500MB in bytes
+      textMaxSize = 5 * 1024 * 1024 // 5MB in bytes
+      // check file type
+      if (file.type.includes('image')) {
+        if (file.size > photoMaxSize) {
+          throw new Error(`Photo lớn hơn giới hạn 50MB`)
+        }
+      } else if (file.type.includes('video')) {
+        if (file.size > videoMaxSize) {
+          throw new Error(`Video lớn hơn giới hạn 500MB`)
+        }
+      } else {
+        if (file.size > textMaxSize) {
+          throw new Error(`Văn bản lớn hơn giới hạn 5MB`)
+        }
+      }
+      return true
+    }
+  })
+
+
+  // dropzone config
+</script>
+
+{% endblock %}
