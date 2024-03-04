@@ -83,6 +83,9 @@ def return_recaptchakey():
         return "Unauthorized", 401
     return make_response((app.config["RECAPTCHA_PRIVATE_KEY"], 200))
 
+@app.route("/success", methods=["GET"])
+def show_success_form():
+    return render_template("success.html")
 
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)

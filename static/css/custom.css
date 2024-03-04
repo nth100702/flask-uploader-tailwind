@@ -38,6 +38,9 @@
     background-position: bottom -195px right -215px;
   }
 
-nav{
-
+i {
+  color: #057a55;
+  font-size: 100px;
+  line-height: 200px;
+  margin-left:-15px;
 }
