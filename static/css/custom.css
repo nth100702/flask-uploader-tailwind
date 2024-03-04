@@ -1,7 +1,7 @@
 .background-color{
     background-color: #ffde59;
 }
-  
+
 #bg-img-top-lef{
     width: 300px;
     height: 300px;
@@ -37,3 +37,7 @@
     background-size: 200%;
     background-position: bottom -195px right -215px;
   }
+
+nav{
+
+}
